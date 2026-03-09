@@ -1,18 +1,36 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'JDK8'
+        maven 'Maven3'
+    }
+
     stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Rohitgupta678/selenium-jenkins-demo.git'
+            }
+        }
+
         stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                bat 'mvn clean compile'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
+    }
 
+    post {
+        always {
+            junit '**/target/surefire-reports/*.xml'
+        }
     }
 }
